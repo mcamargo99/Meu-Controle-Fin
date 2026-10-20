@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-@\\.]+$');
+    }
+
+    function isSafePathId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128;
+    }
+
+    // Coleção de Usuários (perfis e credenciais criptografadas por tenant)
+    match /users/{userId} {
+      allow list: if true;
+      allow get: if isValidId(userId);
+      allow create, update: if isValidId(userId)
+        && request.resource.data.keys().hasAll(['id', 'email', 'family_id'])
+        && request.resource.data.email is string
+        && request.resource.data.email.size() >= 3
+        && request.resource.data.email.size() <= 180
+        && request.resource.data.family_id is string
+        && request.resource.data.family_id.size() >= 3
+        && request.resource.data.family_id.size() <= 128;
+      allow delete: if false;
+    }
+
+    // Coleção de Famílias (isoladas por familyId)
+    match /families/{familyId} {
+      allow list: if true;
+      allow get: if isValidId(familyId);
+      allow create, update: if isValidId(familyId)
+        && request.resource.data.keys().hasAll(['id', 'nome', 'invite_code'])
+        && request.resource.data.nome is string
+        && request.resource.data.nome.size() >= 1
+        && request.resource.data.nome.size() <= 120;
+      allow delete: if false;
+
+      match /members/{memberId} {
+        allow list: if isSafePathId(familyId);
+        allow get, create, update, delete: if isValidId(familyId) && isValidId(memberId);
+      }
+
+      match /categorias/{categoriaId} {
+        allow list: if isSafePathId(familyId);
+        allow get, create, update, delete: if isValidId(familyId) && isValidId(categoriaId);
+      }
+
+      match /contas/{contaId} {
+        allow list: if isSafePathId(familyId);
+        allow get, create, update, delete: if isValidId(familyId) && isValidId(contaId);
+      }
+
+      match /entradas/{entradaId} {
+        allow list: if isSafePathId(familyId);
+        allow get, create, update, delete: if isValidId(familyId) && isValidId(entradaId);
+      }
+
+      match /parcelamentos/{parcelamentoId} {
+        allow list: if isSafePathId(familyId);
+        allow get, create, update, delete: if isValidId(familyId) && isValidId(parcelamentoId);
+      }
+    }
+  }
+}

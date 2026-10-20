@@ -1,0 +1,6 @@
+{
+  "name": "Replicador & Diagnóstico Digital",
+  "description": "Sistema de gestão e diagnóstico digital integrado com banco de dados e alta conversão.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

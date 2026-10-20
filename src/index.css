@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #2563eb;
+  --color-primary-foreground: #ffffff;
+}
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    /* Soft contrasting slate canvas for light mode so white cards pop */
+    --background: #f1f4f9;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --card-border: #cbd5e1;
+    --primary: #2563eb;
+    --primary-foreground: #ffffff;
+    --muted: #e2e8f0;
+    --muted-foreground: #475569;
+    --input: #ffffff;
+    --input-border: #cbd5e1;
+    --destructive: #dc2626;
+    --success: #15803d;
+    --warning: #d97706;
+  }
+
+  html.dark, body.dark, :root.dark {
+    --background: #090a0f;
+    --foreground: #f8fafc;
+    --card: #12141a;
+    --card-foreground: #f8fafc;
+    --card-border: #1f232d;
+    --primary: #8ab4f8;
+    --primary-foreground: #090a0f;
+    --muted: #161820;
+    --muted-foreground: #94a3b8;
+    --input: #161820;
+    --input-border: #262c3b;
+    --destructive: #f87171;
+    --success: #4ade80;
+    --warning: #fbbf24;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+}
+
+/* Card surfaces with high-fidelity depth, crisp borders, and distinct light/dark styling */
+.card-surface {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.07), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  border: 1px solid var(--card-border);
+  transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.2s ease, box-shadow 0.15s ease;
+}
+
+html.dark .card-surface, body.dark .card-surface {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.55);
+}
+
+.card-surface:hover {
+  border-color: var(--primary);
+}
+
+/* Hero Surface: Vibrant high-contrast styling in both themes */
+.hero-surface {
+  background: linear-gradient(135deg, #ffffff 0%, #f8faff 40%, #eef4fe 100%);
+  color: #0f172a;
+  border-radius: 1.5rem;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+}
+
+html.dark .hero-surface, body.dark .hero-surface {
+  background: linear-gradient(145deg, #161922 0%, #101217 100%);
+  color: #ffffff;
+  border: 1px solid #232836;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
+}
+
+/* Floating Action Button with micro-spring */
+.fab-glow {
+  box-shadow: 0 8px 25px -4px rgba(37, 99, 235, 0.35);
+}
+
+html.dark .fab-glow {
+  box-shadow: 0 8px 25px -4px rgba(138, 180, 248, 0.4);
+}
+
+.input-surface {
+  background-color: var(--input);
+  border: 1px solid var(--input-border);
+  color: var(--foreground);
+  border-radius: 1rem;
+  transition: border-color 0.15s ease, background-color 0.2s ease;
+}
+
+.input-surface:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+html.dark .input-surface:focus {
+  box-shadow: 0 0 0 3px rgba(138, 180, 248, 0.15);
+}
+
+/* Hide scrollbar for tabs */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

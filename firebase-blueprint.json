@@ -1,0 +1,149 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Perfil do usuário contendo e-mail e vínculo com a família.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "UID do usuário" },
+        "email": { "type": "string", "description": "E-mail do usuário" },
+        "nome": { "type": "string", "description": "Nome do usuário" },
+        "family_id": { "type": "string", "description": "ID da família ativa do usuário" },
+        "created_at": { "type": "string", "description": "Data ISO de criação" }
+      },
+      "required": ["id", "email", "family_id"]
+    },
+    "Family": {
+      "title": "Family",
+      "description": "Registro do grupo familiar e preferências de fechamento.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID único da família" },
+        "nome": { "type": "string", "description": "Nome da família" },
+        "owner_uid": { "type": "string", "description": "UID do criador da família" },
+        "invite_code": { "type": "string", "description": "Código de 6 caracteres para convite" },
+        "fechamento_dia": { "type": "number", "description": "Dia de corte do mês" },
+        "manual_saldos": { "type": "object", "description": "Mapeamento de saldos manuais por competência YYYY-MM" },
+        "created_at": { "type": "string", "description": "Data ISO de criação" }
+      },
+      "required": ["id", "nome", "owner_uid", "invite_code"]
+    },
+    "FamilyMember": {
+      "title": "FamilyMember",
+      "description": "Membro associado a uma família.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID do membro" },
+        "family_id": { "type": "string", "description": "ID da família vinculada" },
+        "uid": { "type": "string", "description": "UID de autenticação do membro (se tiver login)" },
+        "nome": { "type": "string", "description": "Nome do membro" },
+        "email": { "type": "string", "description": "E-mail do membro" },
+        "role": { "type": "string", "enum": ["Administrador", "Membro"], "description": "Cargo na família" },
+        "created_at": { "type": "string", "description": "Data ISO de criação" }
+      },
+      "required": ["id", "family_id", "nome", "role"]
+    },
+    "Categoria": {
+      "title": "Categoria",
+      "description": "Categoria de despesa ou receita da família.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID da categoria" },
+        "family_id": { "type": "string", "description": "ID da família" },
+        "nome": { "type": "string", "description": "Nome da categoria" },
+        "tipo": { "type": "string", "description": "Fixa, Variável ou Imprevisto" },
+        "created_at": { "type": "string", "description": "Data ISO" }
+      },
+      "required": ["id", "family_id", "nome"]
+    },
+    "Conta": {
+      "title": "Conta",
+      "description": "Conta ou despesa financeira da família.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID da conta" },
+        "family_id": { "type": "string", "description": "ID da família proprietária" },
+        "created_by": { "type": "string", "description": "UID do usuário criador" },
+        "nome": { "type": "string", "description": "Nome da conta / credor" },
+        "descricao": { "type": "string", "description": "Descrição opcional" },
+        "categoria": { "type": "string", "description": "Categoria associada" },
+        "tipo": { "type": "string", "enum": ["fixa", "variavel", "imprevisto", "cartao"], "description": "Tipo de despesa" },
+        "valor": { "type": "number", "description": "Valor monetário em R$" },
+        "vencimento": { "type": "string", "description": "Data YYYY-MM-DD" },
+        "competencia": { "type": "string", "description": "Competência YYYY-MM" },
+        "periodo": { "type": "number", "description": "10 ou 20" },
+        "situacao": { "type": "string", "enum": ["pendente", "pago", "atrasado", "cancelado"], "description": "Status de pagamento" },
+        "data_pagamento": { "type": "string", "description": "Data YYYY-MM-DD do pagamento" },
+        "recorrente": { "type": "boolean", "description": "Indica se repete todo mês" },
+        "parcelamento_id": { "type": "string", "description": "ID do parcelamento de origem" }
+      },
+      "required": ["id", "family_id", "nome", "categoria", "tipo", "valor", "vencimento", "competencia", "periodo", "situacao"]
+    },
+    "Entrada": {
+      "title": "Entrada",
+      "description": "Receita ou entrada de dinheiro da família.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID da entrada" },
+        "family_id": { "type": "string", "description": "ID da família proprietária" },
+        "descricao": { "type": "string", "description": "Descrição da receita" },
+        "valor": { "type": "number", "description": "Valor monetário em R$" },
+        "data_prevista": { "type": "string", "description": "Data prevista YYYY-MM-DD" },
+        "data_recebida": { "type": "string", "description": "Data recebida YYYY-MM-DD" },
+        "competencia": { "type": "string", "description": "Competência YYYY-MM" },
+        "tipo": { "type": "string", "enum": ["salario", "extra", "investimento", "outro"], "description": "Tipo de entrada" },
+        "pessoa": { "type": "string", "description": "Nome da pessoa beneficiária" },
+        "situacao": { "type": "string", "enum": ["previsto", "recebido"], "description": "Status da entrada" }
+      },
+      "required": ["id", "family_id", "descricao", "valor", "data_prevista", "competencia", "tipo", "situacao"]
+    },
+    "Parcelamento": {
+      "title": "Parcelamento",
+      "description": "Compra parcelada ou financiamento em andamento.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID do parcelamento" },
+        "family_id": { "type": "string", "description": "ID da família proprietária" },
+        "descricao": { "type": "string", "description": "Descrição da despesa parcelada" },
+        "cartao": { "type": "string", "description": "Cartão ou meio de parcelamento" },
+        "valor_total": { "type": "number", "description": "Valor total da dívida" },
+        "valor_parcela": { "type": "number", "description": "Valor de cada parcela" },
+        "total_parcelas": { "type": "number", "description": "Quantidade total de parcelas" },
+        "parcela_atual": { "type": "number", "description": "Número da parcela corrente" },
+        "data_primeira": { "type": "string", "description": "Data YYYY-MM-DD da primeira parcela" },
+        "situacao": { "type": "string", "enum": ["ativo", "finalizado"], "description": "Status do parcelamento" }
+      },
+      "required": ["id", "family_id", "descricao", "valor_parcela", "total_parcelas", "data_primeira", "situacao"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Coleção de perfis de usuário"
+    },
+    "/families/{familyId}": {
+      "schema": { "$ref": "#/entities/Family" },
+      "description": "Coleção de famílias e grupos de orçamento"
+    },
+    "/families/{familyId}/members/{memberId}": {
+      "schema": { "$ref": "#/entities/FamilyMember" },
+      "description": "Membros pertencentes a uma família"
+    },
+    "/families/{familyId}/categorias/{categoriaId}": {
+      "schema": { "$ref": "#/entities/Categoria" },
+      "description": "Categorias de despesa e receita da família"
+    },
+    "/families/{familyId}/contas/{contaId}": {
+      "schema": { "$ref": "#/entities/Conta" },
+      "description": "Lançamentos de contas e despesas da família"
+    },
+    "/families/{familyId}/entradas/{entradaId}": {
+      "schema": { "$ref": "#/entities/Entrada" },
+      "description": "Lançamentos de receitas e salários da família"
+    },
+    "/families/{familyId}/parcelamentos/{parcelamentoId}": {
+      "schema": { "$ref": "#/entities/Parcelamento" },
+      "description": "Compras e empréstimos parcelados da família"
+    }
+  }
+}
